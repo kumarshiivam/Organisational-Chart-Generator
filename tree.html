@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Organizational Chart</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/vfs_fonts.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/orgchart/2.1.10/js/jquery.orgchart.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/orgchart/2.1.10/css/jquery.orgchart.min.css">
+</head>
+<body>
+  <div id="chart-container"></div>
+  <button id="downloadButton">Download as PDF</button>
+
+  <script>
+    $(document).ready(function() {
+      // Define the organizational data
+      var data = {
+        id: 1,
+        name: 'John Doe',
+        title: 'CEO',
+        children: [
+          {
+            id: 2,
+            name: 'Jane Smith',
+            title: 'COO',
+            children: [
+              {
+                id: 3,
+                name: 'Mark Johnson',
+                title: 'Manager',
+                children: [
+                  {
+                    id: 6,
+                    name: 'Emily Davis',
+                    title: 'Team Lead',
+                    children: [
+                      {
+                        id: 11,
+                        name: 'Michael Clark',
+                        title: 'Developer'
+                      },
+                      {
+                        id: 12,
+                        name: 'Sophia Walker',
+                        title: 'Developer'
+                      }
+                    ]
+                  },
+                  {
+                    id: 7,
+                    name: 'Oliver Wilson',
+                    title: 'Team Lead',
+                    children: [
+                      {
+                        id: 13,
+                        name: 'Lily Anderson',
+                        title: 'Developer'
+                      },
+                      {
+                        id: 14,
+                        name: 'Lucas Martinez',
+                        title: 'Developer'
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: 4,
+                name: 'Emily Williams',
+                title: 'Manager',
+                children: [
+                  {
+                    id: 8,
+                    name: 'Harper Taylor',
+                    title: 'Team Lead',
+                    children: [
+                      {
+                        id: 15,
+                        name: 'Emma Adams',
+                        title: 'Developer'
+                      },
+                      {
+                        id: 16,
+                        name: 'Mason Turner',
+                        title: 'Developer'
+                      }
+                    ]
+                  },
+                  {
+                    id: 9,
+                    name: 'Ella Thomas',
+                    title: 'Team Lead',
+                    children: [
+                      {
+                        id: 17,
+                        name: 'Ava Lee',
+                        title: 'Developer'
+                      },
+                      {
+                        id: 18,
+                        name: 'Liam Harris',
+                        title: 'Developer'
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: 5,
+            name: 'Michael Brown',
+            title: 'CTO',
+            children: [
+              {
+                id: 10,
+                name: 'Benjamin Rodriguez',
+                title: 'Manager',
+                children: [
+                  {
+                    id: 19,
+                    name: 'Charlotte Scott',
+                    title: 'Team Lead',
+                    children: [
+                      {
+                        id: 20,
+                        name: 'Sebastian Hill',
+                        title: 'Developer'
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      // Generate the organizational chart
+      var oc = $('#chart-container').orgchart({
+        data: data,
+        nodeContent: 'title',
+        nodeID: 'id',
+        createNode: function(node, data) {
+          // Customize node appearance if needed
+        }
+      });
+
+      // Event handler for collapsing and expanding nodes
+      $('#chart-container').on('click', '.orgchart .node', function() {
+        var $this = $(this);
+        if ($this.hasClass('collapsed')) {
+          $this.removeClass('collapsed');
+          oc.showChildren($this);
+        } else {
+          $this.addClass('collapsed');
+          oc.hideChildren($this);
+        }
+      });
+
+      $("#downloadButton").on("click", function() {
+        var chartContainer = $('#chart-container')[0];
+        html2canvas(chartContainer).then(function(canvas) {
+          var imageData = canvas.toDataURL('image/png');
+          var docDefinition = {
+            content: [
+              {
+                image: imageData,
+                width: 500,
+              }
+            ]
+          };
+          pdfMake.createPdf(docDefinition).download('organizational_chart.pdf');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
